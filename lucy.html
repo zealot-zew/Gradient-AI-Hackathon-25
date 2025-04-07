@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Learning Platform</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6bbaa7;
+            --background-color: #f9f7f7;
+            --text-color: #333;
+            --highlight-color: #ffd166;
+            --error-color: #ef476f;
+            --success-color: #06d6a0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        /* Form Styles */
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 500px;
+            margin: 40px auto;
+            transition: all 0.3s ease;
+        }
+
+        .form-title {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #3a5a84;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #5aa996;
+        }
+
+        /* Option Selector */
+        .option-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .option-card {
+            flex: 1;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+
+        .option-card img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .modules-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .module-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .module-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .module-content {
+            padding: 20px;
+        }
+
+        .module-footer {
+            padding: 15px;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+
+        /* Feedback Panel */
+        .feedback-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            max-width: 300px;
+            transition: all 0.3s ease;
+            transform: translateX(350px);
+        }
+
+        .feedback-panel.show {
+            transform: translateX(0);
+        }
+
+        .feedback-title {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .emoji-options {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .emoji-option {
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .emoji-option:hover {
+            transform: scale(1.2);
+        }
+
+        /* ADHD-friendly styles */
+        .adhd-mode {
+            --primary-color: #6200ea;
+            --secondary-color: #00bfa5;
+            --highlight-color: #ffab00;
+        }
+
+        .adhd-mode .container {
+            max-width: 800px;
+        }
+
+        .adhd-mode p {
+            line-height: 1.6;
+            margin-bottom: 1.2em;
+        }
+
+        .adhd-mode .module-card {
+            border-left: 5px solid var(--highlight-color);
+        }
+
+        /* Dyslexia-friendly styles */
+        .dyslexia-mode {
+            --primary-color: #3949ab;
+            --secondary-color: #00897b;
+            --text-color: #212121;
+        }
+
+        .dyslexia-mode body {
+            font-family: 'OpenDyslexic', 'Arial', sans-serif;
+            line-height: 1.8;
+        }
+
+        .dyslexia-mode p {
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            word-spacing: 3px;
+        }
+
+        .dyslexia-mode h1, 
+        .dyslexia-mode h2, 
+        .dyslexia-mode h3 {
+            margin-bottom: 20px;
+        }
+
+        /* Animation for transitions */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="container fade-in">
+        <div class="form-container">
+            <h2 class="form-title">Welcome to AdaptLearn</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="button" class="btn" onclick="showNeedsAssessment()">Log In</button>
+                <p style="text-align: center; margin-top: 20px;">
+                    Don't have an account? <a href="#" style="color: var(--primary-color);">Sign Up</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Needs Assessment Page -->
+    <div id="needsAssessmentPage" class="container fade-in" style="display: none;">
+        <div class="form-container">
+            <h2 class="form-title">Help Us Understand Your Needs</h2>
+            <p>Please select which learning difference you experience:</p>
+            
+            <div class="option-container">
+                <div class="option-card" onclick="selectOption(this, 'adhd')">
+                    <img src="/api/placeholder/80/80" alt="ADHD Icon">
+                    <h3>ADHD</h3>
+                    <p>Attention Deficit Hyperactivity Disorder</p>
+                </div>
+                <div class="option-card" onclick="selectOption(this, 'dyslexia')">
+                    <img src="/api/placeholder/80/80" alt="Dyslexia Icon">
+                    <h3>Dyslexia</h3>
+                    <p>Reading and Language Processing Difference</p>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" style="margin-top: 30px;" onclick="showUploadPage()">Continue</button>
+        </div>
+    </div>
+
+    <!-- Upload Page -->
+    <div id="uploadPage" class="container fade-in" style="display: none;">
+        <div class="upload-section">
+            <h2 class="form-title">Upload Your Learning Materials</h2>
+            <p>Please upload the PDF of your textbook or learning material</p>
+            
+            <div class="upload-area" onclick="triggerFileUpload()">
+                <img src="/api/placeholder/80/80" alt="Upload Icon">
+                <h3>Drop your PDF here</h3>
+                <p>or click to browse files</p>
+                <input type="file" id="fileUpload" style="display: none;" accept=".pdf">
+            </div>
+            
+            <div id="uploadStatus" style="margin: 20px 0; display: none;">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 20px; height: 20px; border-radius: 50%; border: 3px solid var(--primary-color); border-top-color: transparent; animation: spin 1s linear infinite; margin-right: 10px;"></div>
+                    <p>Processing your document... This may take a few minutes.</p>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" onclick="processUpload()">Upload and Process</button>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="container fade-in" style="display: none;">
+        <header>
+            <h1>Your Personalized Learning Dashboard</h1>
+        </header>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+            <h2>Your Learning Modules</h2>
+            <div>
+                <label for="moduleType">View by:</label>
+                <select id="moduleType" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                    <option value="all">All Modules</option>
+                    <option value="video">Video Lessons</option>
+                    <option value="podcast">Audio/Podcasts</option>
+                    <option value="animation">Animations</option>
+                    <option value="quiz">Quizzes</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="modules-container">
+            <!-- Module cards will be dynamically generated here -->
+            <div class="module-card">
+                <div class="module-header">
+                    <h3>Interactive Video Game</h3>
+                </div>
+                <div class="module-content">
+                    <img src="/api/placeholder/280/160" alt="Video Game Screenshot" style="width: 100%; border-radius: 5px;">
+                    <p>Learn about cell biology through an engaging puzzle game where you build cell structures.</p>
+                </div>
+                <div class="module-footer">
+                    <button class="btn btn-secondary">Start Learning</button>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-header">
+                    <h3>Audio Lesson</h3>
+                </div>
+                <div class="module-content">
+                    <img src="/api/placeholder/280/160" alt="Audio Lesson" style="width: 100%; border-radius: 5px;">
+                    <p>Listen to a narrated explanation of photosynthesis with sound effects to help visualize the process.</p>
+                </div>
+                <div class="module-footer">
+                    <button class="btn btn-secondary">Listen Now</button>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-header">
+                    <h3>Animated Explanation</h3>
+                </div>
+                <div class="module-content">
+                    <img src="/api/placeholder/280/160" alt="Animation" style="width: 100%; border-radius: 5px;">
+                    <p>Watch an animated story that explains chemical reactions through colorful characters.</p>
+                </div>
+                <div class="module-footer">
+                    <button class="btn btn-secondary">Watch Animation</button>
+                </div>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-header">
+                    <h3>Quiz Challenge</h3>
+                </div>
+                <div class="module-content">
+                    <img src="/api/placeholder/280/160" alt="Quiz" style="width: 100%; border-radius: 5px;">
+                    <p>Test your knowledge with a gamified quiz that adapts to your learning style and pace.</p>
+                </div>
+                <div class="module-footer">
+                    <button class="btn btn-secondary">Take Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Panel -->
+    <div id="feedbackPanel" class="feedback-panel">
+        <h3 class="feedback-title">How are you finding this lesson?</h3>
+        <div class="emoji-options">
+            <div class="emoji-option" onclick="provideFeedback('difficult')">😣</div>
+            <div class="emoji-option" onclick="provideFeedback('okay')">😐</div>
+            <div class="emoji-option" onclick="provideFeedback('good')">🙂</div>
+            <div class="emoji-option" onclick="provideFeedback('great')">😄</div>
+        </div>
+        <textarea placeholder="Any additional comments?" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ddd; margin-bottom: 10px;"></textarea>
+        <button class="btn" style="font-size: 14px; padding: 8px;">Submit Feedback</button>
+    </div>
+
+    <script>
+        // Global variable to store user preference
+        let userLearningDifference = '';
+        
+        // Function to show different pages
+        function showNeedsAssessment() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('needsAssessmentPage').style.display = 'block';
+        }
+        
+        function showUploadPage() {
+            if (!userLearningDifference) {
+                alert('Please select your learning difference to continue.');
+                return;
+            }
+            
+            document.getElementById('needsAssessmentPage').style.display = 'none';
+            document.getElementById('uploadPage').style.display = 'block';
+            
+            // Apply the appropriate mode to the body
+            document.body.className = userLearningDifference + '-mode';
+        }
+        
+        function showDashboard() {
+            document.getElementById('uploadPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'block';
+            
+            // Show feedback panel after 2 minutes
+            setTimeout(function() {
+                document.getElementById('feedbackPanel').classList.add('show');
+            }, 120000);
+        }
+        
+        // Function to select learning difference option
+        function selectOption(element, option) {
+            // Remove 'selected' class from all options
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add 'selected' class to clicked option
+            element.classList.add('selected');
+            
+            // Store user's selection
+            userLearningDifference = option;
+        }
+        
+        // Function to trigger file upload dialog
+        function triggerFileUpload() {
+            document.getElementById('fileUpload').click();
+        }
+        
+        // Function to process file upload
+        function processUpload() {
+            const fileInput = document.getElementById('fileUpload');
+            if (fileInput.files.length === 0) {
+                alert('Please select a PDF file to upload');
+                return;
+            }
+            
+            // Show loading status
+            document.getElementById('uploadStatus').style.display = 'block';
+            
+            // Simulate PDF processing with AI
+            setTimeout(function() {
+                showDashboard();
+            }, 3000);
+        }
+        
+        // Function to provide feedback
+        function provideFeedback(feedback) {
+            // Here you would normally send this data to your server
+            console.log('User feedback:', feedback);
+            
+            // Hide the feedback panel after submission
+            document.getElementById('feedbackPanel').classList.remove('show');
+            
+            // Show it again after some time
+            setTimeout(function() {
+                document.getElementById('feedbackPanel').classList.add('show');
+            }, 300000); // Show again after 5 minutes
+        }
+        
+        // Add event listener for file upload
+        document.getElementById('fileUpload').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                document.querySelector('.upload-area h3').textContent = fileName;
+            }
+        });
+
+        // Add animation keyframes
+        const styleSheet = document.styleSheets[0];
+        styleSheet.insertRule(`
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `, styleSheet.cssRules.length);
+    </script>
+</body>
+</html>
